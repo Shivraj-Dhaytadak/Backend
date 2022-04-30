@@ -5,7 +5,7 @@ import pickle
 import Converter
 import numpy as np
 app = Flask(__name__)
-model = pickle.load(open('model.pkl', 'rb'))
+model = pickle.load(open('model1.pkl', 'rb'))
 
 app.secret_key = "6042d70a-20c4-4049-a6dc-e9a244903532"
 
@@ -57,12 +57,12 @@ def userDashboard():
         email = session["email"]
         user_data = records.find_one({"email": email})
         if user_data['email'] == session["email"]:
-            message = 'Logged In As ' + user_data['email']
+            message = 'Logged In As ' + user_data['name']
             return render_template('userDashboard.html', email=email, message=message)
         else:
-            return redirect(url_for("userLogin"))
+            return redirect(url_for("userlogin"))
     else:
-        return redirect(url_for("userLogin"))
+        return redirect(url_for("userlogin"))
 
 
 @app.route('/loanapply', methods=['POST', 'GET'])
@@ -114,8 +114,15 @@ def predict():
 
     # final_features = [np.array(int_features)]
     # print(final_features)
-    prediction = model.predict([[IncomeEntered, AgeEntered, ExperinceEntered, MarritalEntered,
-                               HouseEntered, CarEntered, ProEntered, CityEntered, StateEntered, CJYEntered, CHYEntered]])
+    predarray = [IncomeEntered, AgeEntered, ExperinceEntered, CJYEntered, CHYEntered,
+                 IncomeEntered*IncomeEntered, IncomeEntered *
+                 AgeEntered, IncomeEntered*ExperinceEntered,
+                 IncomeEntered*CJYEntered, IncomeEntered*CHYEntered, AgeEntered *
+                 AgeEntered, AgeEntered*ExperinceEntered,
+                 AgeEntered*CJYEntered, AgeEntered*CHYEntered, ExperinceEntered *
+                 ExperinceEntered, ExperinceEntered*CJYEntered, ExperinceEntered*CHYEntered,
+                 CJYEntered*CJYEntered, CJYEntered*CHYEntered, CHYEntered*CHYEntered]
+    prediction = model.predict([predarray])
     print(prediction)
     output = round(prediction[0], 2)
     print(output)
@@ -148,7 +155,7 @@ def predict():
         "Status": result
     }
     LoanApplication.insert_one(ApplicationForCloud)
-    return render_template('LoanApply.html', prediction_text='Your Loan Appication is {}'.format(result))
+    return render_template('LoanApply.html', prediction_text='Your Loan Application is {}'.format(result))
 
 
 @app.route("/userlogin", methods=["POST", "GET"])
@@ -184,6 +191,7 @@ def userlogin():
 def logout():
     if "email" in session:
         session.pop("email", None)
+        session.clear()
         return render_template("userLogin.html")
     else:
         return render_template('userLogin.html')
@@ -205,17 +213,17 @@ def adminlogin():
         if admin_found:
             email_val = admin_found['email']
             passwordcheck = admin_found['password']
-
             if bcrypt.checkpw(password.encode('utf-8'), passwordcheck):
-                session["email"] = email_val
-                return render_template('adminDashboard.html', loanapps=loanapps)
+                    session["email"] = email_val
+                    return render_template('adminDashboard.html', loanapps=loanapps)
             else:
-                if "email" in session:
-                    return render_template('adminDashboard.html')
-                message = 'Wrong password'
-                return render_template('adminlogin.html', message=message)
-
-
+                    if "email" in session:
+                        return render_template('adminDashboard.html')
+                    message = 'Wrong password'
+            return render_template('adminlogin.html', message=message)
+        else:
+            message = 'Please Enter Valid Credentials'
+            return render_template('adminLogin.html', message=message)
 @app.route('/adminDashboard', methods=['GET', 'POST'])
 def adminDashboard():
     loanapp = LoanApplication.find()
