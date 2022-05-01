@@ -45,7 +45,48 @@ class UserLogin(unittest.TestCase):
         driver.find_element(By.NAME, "user[password]").send_keys("1234")
         driver.find_element(By.XPATH,
             "/html/body/div[2]/div[2]/div[1]/form/input[3]").click()
-        self.assertEquals("Bank User Dashboard", driver.title)
+        driver.implicitly_wait(100)
+        driver.implicitly_wait(2)
+        self.assertEquals("User Dashboard", driver.title)
+
+    def test_user_login_validOne(self):
+        # get driver
+        driver = self.driver
+        driver.get("http://127.0.0.1:5000/")
+        driver.find_element(By.NAME,
+                            "user[email]").send_keys("new@gmail.com")
+        driver.find_element(By.NAME, "user[password]").send_keys("12345")
+        driver.find_element(By.XPATH,
+                            "/html/body/div[2]/div[2]/div[1]/form/input[3]").click()
+        driver.implicitly_wait(100)
+        driver.implicitly_wait(2)
+        self.assertNotEquals("User Dashboard", driver.title)
+
+    def test_user_login_validTwo(self):
+        # get driver
+        driver = self.driver
+        driver.get("http://127.0.0.1:5000/")
+        driver.find_element(By.NAME,
+                            "user[email]").send_keys("new1@gmail.com")
+        driver.find_element(By.NAME, "user[password]").send_keys("1234")
+        driver.find_element(By.XPATH,
+                            "/html/body/div[2]/div[2]/div[1]/form/input[3]").click()
+        driver.implicitly_wait(100)
+        driver.implicitly_wait(2)
+        self.assertEquals("User Dashboard", driver.title)
+
+    def test_user_login_validThree(self):
+        # get driver
+        driver = self.driver
+        driver.get("http://127.0.0.1:5000/")
+        driver.find_element(By.NAME,
+                            "user[email]").send_keys("new1@gmail.com")
+        driver.find_element(By.NAME, "user[password]").send_keys("1234")
+        driver.find_element(By.XPATH,
+                            "/html/body/div[2]/div[2]/div[1]/form/input[3]").click()
+        driver.implicitly_wait(100)
+        driver.implicitly_wait(2)
+        self.assertEquals("User Dashboard", driver.title)
 
     def test_user_check_status(self):
         driver = self.driver
@@ -55,7 +96,32 @@ class UserLogin(unittest.TestCase):
         driver.find_element(By.NAME, "user[password]").send_keys("1234")
         driver.find_element(By.XPATH,
                             "/html/body/div[2]/div[2]/div[1]/form/input[3]").click()
+        driver.implicitly_wait(2)
+        driver.find_element(
+            By.XPATH, "/html/body/div[2]/header/nav/ul[1]/li[1]/a").click()
+        driver.implicitly_wait(25)
+        driver.find_element(
+            By.XPATH, "/html/body/div[2]/div[1]/div[3]/div/ul/li[3]/a/span").click()
+        driver.implicitly_wait(25)
 
+    def test_user_loan_status(self):
+        driver = self.driver
+        driver.get("http://127.0.0.1:5000/")
+        driver.find_element(By.NAME,
+                            "user[email]").send_keys("new@gmail.com")
+        driver.find_element(By.NAME, "user[password]").send_keys("1234")
+        driver.find_element(By.XPATH,
+                            "/html/body/div[2]/div[2]/div[1]/form/input[3]").click()
+        driver.implicitly_wait(2)
+        driver.find_element(
+            By.XPATH, "/html/body/div[2]/header/nav/ul[1]/li[1]/a").click()
+        driver.implicitly_wait(25)
+        driver.find_element(
+            By.XPATH, "/html/body/div[2]/div[1]/div[3]/div/ul/li[4]/a/span").click()
+        driver.implicitly_wait(25)
+
+    def tearDown(self):
+        self.driver.close()
     # cleanup method called after every test performed
 
     def test_user_logout(self):
@@ -68,7 +134,9 @@ class UserLogin(unittest.TestCase):
         driver.find_element(By.XPATH,
             "/html/body/div[2]/div[2]/div[1]/form/input[3]").click()
         driver.find_element(By.XPATH,
-            "/html/body/div[1]/nav/ul/li[4]/a").click()
+                            "/html/body/div[2]/header/nav/ul[1]/li[1]/a/i").click()
+        driver.find_element(By.XPATH,
+                            "/html/body/div[2]/div[1]/div[3]/div/ul/li[5]/a").click()
         self.assertEquals("Bank", driver.title)
 
     def tearDown(self):
@@ -92,8 +160,23 @@ class AdminLogin(unittest.TestCase):
         driver.find_element(By.NAME, "admin[password]").send_keys("admin@101")
         driver.find_element(By.XPATH,
             "/html/body/div[1]/form/div/input").click()
-        self.assertEquals("Bank Admin Dashboard", driver.title)
+        self.assertEquals("Admin Dashboard", driver.title)
 
+    def test_admin_login_valid(self):
+        # get driver
+        driver = self.driver
+        driver.get("http://127.0.0.1:5000/")
+        driver.find_element(By.XPATH,
+                            "/html/body/div[1]/div/form/input").click()
+        driver.find_element(By.NAME,
+                            "admin[username]").send_keys("admin101d@gmail.com")
+        driver.find_element(By.NAME, "admin[password]").send_keys("admin@101")
+        driver.find_element(By.XPATH,
+                            "/html/body/div[1]/form/div/input").click()
+        self.assertEquals("Admin Dashboard", driver.title)
+
+    def tearDown(self):
+        self.driver.close()
     # cleanup method called after every test performed
 
     def test_admin_logout(self):
@@ -108,7 +191,9 @@ class AdminLogin(unittest.TestCase):
         driver.find_element(By.XPATH,
             "/html/body/div[1]/form/div/input").click()
         driver.find_element(By.XPATH,
-            "/html/body/div[1]/nav/ul/li[3]/a").click()
+                            "/html/body/div[2]/header/nav/ul[1]/li[1]/a/i").click()
+        driver.find_element(By.XPATH,
+                            "/html/body/div[2]/div[1]/div[3]/div/ul/li[4]/a").click()
         self.assertEquals("Bank", driver.title)
     # cleanup method called after every test performed
 
