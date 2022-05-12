@@ -109,20 +109,20 @@ def predict():
     StateEntered = request.form.get("STATE", type=int)
     CJYEntered = request.form.get("Current_Job_yrs", type=int)
     CHYEntered = request.form.get("Current_House_yrs", type=int)
-    # int_features = [request.form.get("Income", type=int), request.form.get("age", type=int), request.form.get("Experience", type=int), request.form.get("Married/Single", type=int), request.form.get("House_Ownership", type=int), request.form.get(
-    #     "Car_Ownership", type=int), request.form.get("Profession", type=int), request.form.get("City", type=int), request.form.get("STATE", type=int), request.form.get("Current_Job_yrs", type=int), request.form.get("Current_House_yrs", type=int)]
+    int_features = [request.form.get("Income", type=int), request.form.get("age", type=int), request.form.get("Experience", type=int), request.form.get("Married/Single", type=int), request.form.get("House_Ownership", type=int), request.form.get(
+        "Car_Ownership", type=int), request.form.get("Profession", type=int), request.form.get("City", type=int), request.form.get("STATE", type=int), request.form.get("Current_Job_yrs", type=int), request.form.get("Current_House_yrs", type=int)]
 
-    # final_features = [np.array(int_features)]
-    # print(final_features)
-    predarray = [IncomeEntered, AgeEntered, ExperinceEntered, CJYEntered, CHYEntered,
-                 IncomeEntered*IncomeEntered, IncomeEntered *
-                 AgeEntered, IncomeEntered*ExperinceEntered,
-                 IncomeEntered*CJYEntered, IncomeEntered*CHYEntered, AgeEntered *
-                 AgeEntered, AgeEntered*ExperinceEntered,
-                 AgeEntered*CJYEntered, AgeEntered*CHYEntered, ExperinceEntered *
-                 ExperinceEntered, ExperinceEntered*CJYEntered, ExperinceEntered*CHYEntered,
-                 CJYEntered*CJYEntered, CJYEntered*CHYEntered, CHYEntered*CHYEntered]
-    prediction = model.predict([predarray])
+    final_features = [np.array(int_features)]
+    print(final_features)
+    # predarray = [IncomeEntered, AgeEntered, ExperinceEntered, CJYEntered, CHYEntered,
+    #              IncomeEntered*IncomeEntered, IncomeEntered *
+    #              AgeEntered, IncomeEntered*ExperinceEntered,
+    #              IncomeEntered*CJYEntered, IncomeEntered*CHYEntered, AgeEntered *
+    #              AgeEntered, AgeEntered*ExperinceEntered,
+    #              AgeEntered*CJYEntered, AgeEntered*CHYEntered, ExperinceEntered *
+    #              ExperinceEntered, ExperinceEntered*CJYEntered, ExperinceEntered*CHYEntered,
+    #              CJYEntered*CJYEntered, CJYEntered*CHYEntered, CHYEntered*CHYEntered]
+    prediction = model.predict(final_features)
     print(prediction)
     output = round(prediction[0], 2)
     print(output)
@@ -271,4 +271,4 @@ def applicationreject():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
