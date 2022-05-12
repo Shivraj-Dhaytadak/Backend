@@ -5,7 +5,7 @@ import pickle
 import Converter
 import numpy as np
 app = Flask(__name__)
-model = pickle.load(open('model1.pkl', 'rb'))
+model = pickle.load(open('model.pkl', 'rb'))
 
 app.secret_key = "6042d70a-20c4-4049-a6dc-e9a244903532"
 
